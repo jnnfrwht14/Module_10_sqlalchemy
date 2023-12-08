@@ -9,8 +9,6 @@ from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
-
-
 #################################################
 # Database Setup
 #################################################
@@ -39,7 +37,7 @@ app = Flask(__name__)
 #################################################
 @app.route("/")
 def home():
-    """List all available api routes."""
+    """List all available API routes"""
     return (
         f"Available Routes: <br/>"
         f"/api/v1.0/stations <br/>"
@@ -48,15 +46,29 @@ def home():
     )
 
 @app.route("/api/v1.0/stations")
-def station():
-    return station
+def stations():
+    return stations
+
+@app.route("/api/v1.0/precipitation")
+def precipitation():
+    results = session.query(measurement.date, measurement.prcp).all()
+
+    session.close()
+
+    #all_prcp=[]
+    #for ,
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    return tobs
+
 
 # Define what to do when a user hits the /jsonified route
 @app.route("/jsonified")
 def jsonified():
-    return jsonify(station)
+    return jsonify(stations)
  
-results = session.query(Station.name).all()
+results = session.query(stations.name).all()
 
 session.close()
 
