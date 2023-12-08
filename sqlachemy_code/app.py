@@ -12,16 +12,17 @@ from flask import Flask, jsonify
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///../Starter_Code/Resources/hawaii.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
+
 # reflect the tables
 Base.prepare(engine, reflect=True)
-
+Base.classes.keys()
 # Save references to each table
-measurement = Base.classes.measurement
-station = Base.classes.station
+Measurement = Base.classes.measurement
+Station = Base.classes.station
 
 
 # Create our session (link) from Python to the DB
@@ -43,32 +44,40 @@ def home():
         f"/api/v1.0/stations <br/>"
         f"/api/v1.0/precipitation </br>"
         f"/api/v1.0/tobs </br>"
+        f"/api/v1.0/start <br/>"
+        f"/api/v1.0/start/end <br/>"
     )
 
-@app.route("/api/v1.0/stations")
-def stations():
-    return stations
+# @app.route("/api/v1.0/stations")
+# def stations():
+#     return stations
 
-@app.route("/api/v1.0/precipitation")
-def precipitation():
-    results = session.query(measurement.date, measurement.prcp).all()
+# @app.route("/api/v1.0/precipitation")
+# def precipitation():
 
-    session.close()
+#     results = session.query(Measurement.date, Measurement.prcp).all()
 
-    #all_prcp=[]
-    #for ,
+#     session.close()
 
-@app.route("/api/v1.0/tobs")
-def tobs():
-    return tobs
+#     #all_prcp=[]
+#     #for ,
 
+# @app.route("/api/v1.0/tobs")
+# def tobs():
+#     return tobs
 
-# Define what to do when a user hits the /jsonified route
-@app.route("/jsonified")
-def jsonified():
-    return jsonify(stations)
+# @app.route("/api/v1.0/start")
+# @app.route("/api/v1.0/start/end")
+# def start(start=None,end=None):
+#     return start
+#** if, else stmnt
+
+# # Define what to do when a user hits the /jsonified route
+# @app.route("/jsonified")
+# def jsonified():
+#     return jsonify(stations)
  
-results = session.query(stations.name).all()
+# results = session.query(stations.name).all()
 
 session.close()
 
