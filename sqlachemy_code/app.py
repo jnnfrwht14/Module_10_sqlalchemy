@@ -1,11 +1,12 @@
 # Import the dependencies.
 import numpy as np
 import datetime as dt
+from datetime import date
 
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func, exc
+from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
@@ -40,12 +41,14 @@ app = Flask(__name__)
 def home():
 #     """List all available API routes"""
     return (
+        f"Welcome to Hawaii's climate API <br/>"
         f"Available Routes: <br/>"
         f"/api/v1.0/stations <br/>"
         f"/api/v1.0/precipitation </br>"
         f"/api/v1.0/tobs </br>"
-        f"/api/v1.0/start <br/>"
-        f"/api/v1.0/start/end <br/>"
+        f"/api/v1.0/enter_start_date <br/>"
+        f"/api/v1.0/enter_start_date/enter_end_date <br/>"
+        F"Please enter dates in YYYY-mm-dd format"
     )
 
 @app.route("/api/v1.0/stations")
@@ -109,61 +112,51 @@ def tobs():
 
     return jsonify(all_tobs)
 
-@app.route("/api/v1.0/start")
-def start():
-    review = [Measurement.date,
-        func.min(Measurement.tobs),
-        func.max(Measurement.tobs),
-        func.avg(Measurement.tobs)]
-    
-    #year_data = dt.date(2017, 8, 23)-dt.timedelta(days=365)
-    year_data = dt.date(2017, 8, 23)-dt.timedelta(days=365)
-    prcp_scores = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= year_data)
+@app.route("/api/v1.0/<start>")
+def start_date(start):
 
-    # start_data = session.query(*review).\
-    #         filter(func.strftime("%Y-%m-%d", Measurement.date) >= start).\
-    #         group_by(Measurement.date).all()
-    #         order_by(Measurement.date).all()    
-    
+    session = Session(engine)
+
+    start_date = date.fromisoformat(start)
+
+    query = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+    filter(Measurement.date >= start_date).all()
+
     session.close()
 
-    start_date = []
-    for date, min, max, avg in start_date:
-        start_dict = {}
-        start_dict["date"] = date
-        start_dict["Min_temp_F°"] = min
-        start_dict["Max_temp_F°"] = max
-        start_dict["Aver_temp_F°"] = avg
-        start_date.append(start_dict)
+    temp_data = []
+    for min, max, avg in query:    
+        temp_dict = {}
+        temp_dict["Minimum Temperature F degrees"] = min
+        temp_dict["Maximum Temperature F degrees"] = max
+        temp_dict["Average Temperature"] = avg
+        temp_data.append(temp_dict)
 
-    return jsonify(start_date)
+    return jsonify(temp_data)
 
 
-@app.route("/api/v1.0/start/end")
-def start_end(start, end):
-    review = [Measurement.date,
-        func.min(Measurement.tobs),
-        func.max(Measurement.tobs),
-        func.avg(Measurement.tobs)]
-       
-    start_end_data = session.query(*review).\
-            filter(func.strftime("%Y-%m-%d", Measurement.date) >= start).\
-            filter(func.strftime("%Y-%m-%d", Measurement.date) <= end).\
-            group_by(Measurement.date).\
-            order_by(Measurement.date).all()    
-    
+@app.route("/api/v1.0/<start>/<end>")
+def se_date(start, end):
+
+    session = Session(engine)
+
+    start_date = date.fromisoformat(start)
+    end_date = date.fromisoformat(end)
+
+    query = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+    filter(Measurement.date >= start_date, Measurement.date <= end_date).all()
+
     session.close()
 
-    start_end_date = []
-    for date, min, max, avg in start_end_date:
-        se_dict = {}
-        se_dict["date"] = date
-        se_dict["Min_temp_F°"] = min
-        se_dict["Max_temp_F°"] = max
-        se_dict["Aver_temp_F°"] = avg
-        start_end_date.append(se_dict)
+    temp_data = []
+    for min, max, avg in query:    
+        temp_dict = {}
+        temp_dict["Minimum Temperature F degrees"] = min
+        temp_dict["Maximum Temperature F degrees"] = max
+        temp_dict["Average Temperature"] = avg
+        temp_data.append(temp_dict)
 
-    return jsonify(start_end_date)
+    return jsonify(temp_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
