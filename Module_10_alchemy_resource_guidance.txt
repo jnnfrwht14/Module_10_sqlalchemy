@@ -1,5 +1,9 @@
 Module_10_alchemy_resource_guidance
 
 
-https://matplotlib.org/stable/gallery/color/named_colors.html
-Met with tutor Sharon - highly recommend!
+- https://matplotlib.org/stable/gallery/color/named_colors.html
+- Met with tutor Sharon - highly recommend!
+- https://docs.sqlalchemy.org/en/14/core/functions.html#sqlalchemy.sql.functions.count
+- https://www.tutorialspoint.com/sqlalchemy/sqlalchemy_core_using_functions.htm
+- Talked to Robert with Ask BCS for sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) unable to open database file error
+-https://docs.python.org/3/library/datetime.html
