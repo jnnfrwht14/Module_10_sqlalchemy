@@ -7,4 +7,4 @@
 * app.py - used to retrieve data
 * climate_starter - used to manipulate data
 ## The Waihee frequency data is displayed in frequency.png
-## The Waihee precipitation data is displayed in prcp.pnggit 
+## The Waihee precipitation data is displayed in prcp.png
